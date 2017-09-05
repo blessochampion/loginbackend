@@ -53,6 +53,7 @@ public class ApiController {
             return response;
         }
 
+        owner.setPoint(5);
         response.setCode(LoginAppResponse.SUCCESS);
         response.setDescription("Success");
         response.setData(dataOwnerService.createUser(owner));
