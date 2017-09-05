@@ -8,5 +8,6 @@ import java.util.List;
 public interface DataOwnerRepository extends JpaRepository<DataOwner, Long> {
 
     List<DataOwner> findByEmail(String email);
+    List<DataOwner> findByUsername(String username);
 
 }

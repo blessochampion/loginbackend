@@ -34,6 +34,11 @@ public class DataOwnerServiceImpl implements DataOwnerService{
     }
 
     @Override
+    public List<DataOwner> getUserByUsername(String username) {
+        return dataOwnerRepository.findByUsername(username);
+    }
+
+    @Override
     public DataOwner setUserPoint(long userId) {
         DataOwner user = dataOwnerRepository.findOne(userId);
         user.setPoint(user.getPoint()-1);

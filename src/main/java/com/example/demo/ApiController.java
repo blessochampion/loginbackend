@@ -59,7 +59,7 @@ public class ApiController {
     public LoginAppResponse<DataOwner> authenticate(@RequestBody DataOwner owner) {
         LoginAppResponse<DataOwner> response = new LoginAppResponse<>();
         response.setCode(LoginAppResponse.FAILURE);
-        List<DataOwner> users = dataOwnerService.getUserByEmail(owner.getEmail());
+        List<DataOwner> users = dataOwnerService.getUserByUsername(owner.getUsername());
         if (users.size() == 0 || !users.get(0).getPassword().equals(owner.getPassword())) {
             response.setDescription("Invalid Username/Password");
             return response;
