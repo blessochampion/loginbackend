@@ -40,10 +40,16 @@ public class ApiController {
     public LoginAppResponse<DataOwner> register(@RequestBody DataOwner owner) {
         LoginAppResponse<DataOwner> response = new LoginAppResponse<>();
         response.setCode(LoginAppResponse.FAILURE);
-        List<DataOwner> users = dataOwnerService.getUserByEmail(owner.getEmail());
+        List<DataOwner> users = dataOwnerService.getUserByUsername(owner.getUsername());
 
         if (users.size() > 0) {
-            response.setDescription("User already Exists");
+            response.setDescription("Username Exists");
+            return response;
+        }
+        users = dataOwnerService.getUserByEmail(owner.getEmail());
+
+        if (users.size() > 0) {
+            response.setDescription("Email Exists");
             return response;
         }
 
