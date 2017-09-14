@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.config.ServerConfig;
 import com.example.demo.model.Content;
 import com.example.demo.model.DataOwner;
 import com.example.demo.model.LoginAppResponse;
@@ -52,10 +53,13 @@ public class ApiController {
             return response;
         }
 
+        /*todo :remove default point*/
         owner.setPoint(5);
         response.setCode(LoginAppResponse.SUCCESS);
         response.setDescription("Success");
-        response.setData(dataOwnerService.createUser(owner));
+        DataOwner user = dataOwnerService.createUser(owner);
+        sendMail(user);
+        response.setData(user);
         return response;
 
     }
@@ -112,23 +116,21 @@ public class ApiController {
          return response;
     }
 
-    @PostMapping(value = "/users/sendmail")
-    @ResponseBody
-    public String sendMail(@RequestBody DataOwner owner){
+
+    public void sendMail( DataOwner owner){
 
         String composedMail = composeEmail(owner);
         ApplicationContext context =
                 new ClassPathXmlApplicationContext("Spring-Mail.xml");
 
         MailSender2 mm = (MailSender2) context.getBean("mailMail");
-        mm.sendMail("loginappng@gmail.com",
-                owner.getEmail(),
-                "Testing123",composedMail);
+        mm.sendMail(ServerConfig.EMAIL,
+                owner.getEmail(), ServerConfig.EMAIL_TITLE,composedMail);
 
-        return "okay";
     }
 
     @GetMapping(value = "/users/confirm/{id}")
+    @ResponseBody
     private String confirmUser(@PathVariable("id") long id){
         DataOwner owner = dataOwnerService.getUserById(id);
         owner.setConfirmation_status(1);
