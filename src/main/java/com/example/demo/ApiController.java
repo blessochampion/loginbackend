@@ -54,7 +54,7 @@ public class ApiController {
         }
 
         /*todo :remove default point*/
-        owner.setPoint(5);
+        owner.setPoint(10);
         response.setCode(LoginAppResponse.SUCCESS);
         response.setDescription("Success");
         DataOwner user = dataOwnerService.createUser(owner);
