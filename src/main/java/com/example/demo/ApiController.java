@@ -67,14 +67,14 @@ public class ApiController {
         response.setCode(LoginAppResponse.FAILURE);
         List<DataOwner> users = dataOwnerService.getUserByUsername(owner.getUsername());
 
-        if (users.size() == 0 || users.get(0).getConfirmation_status()==0) {
-            response.setDescription("Please confirm your email address");
-            return response;
-        }
-
 
         if (users.size() == 0 || !users.get(0).getPassword().equals(owner.getPassword())) {
             response.setDescription("Invalid Username/Password");
+            return response;
+        }
+
+        if (users.get(0).getConfirmation_status()==0) {
+            response.setDescription("Please confirm your email address");
             return response;
         }
         response.setCode(LoginAppResponse.SUCCESS);
