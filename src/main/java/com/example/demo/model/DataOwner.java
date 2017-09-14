@@ -20,6 +20,16 @@ public class DataOwner
 
     int point;
 
+    public int getConfirmation_status() {
+        return confirmation_status;
+    }
+
+    public void setConfirmation_status(int confirmation_status) {
+        this.confirmation_status = confirmation_status;
+    }
+
+    int confirmation_status;
+
     public Long getId() {
         return id;
     }
