@@ -131,7 +131,9 @@ public class ApiController {
     @GetMapping(value = "/users/confirm/{id}")
     private String confirmUser(@PathVariable("is") long id){
         DataOwner owner = dataOwnerService.getUserById(id);
-        return  "Hi " + owner.getUsername() + "Your account has been confirmed";
+        owner.setConfirmation_status(1);
+        dataOwnerService.createUser(owner);
+        return  "Your account has been confirmed";
     }
 
     private String composeEmail(DataOwner owner) {
