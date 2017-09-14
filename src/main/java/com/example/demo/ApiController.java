@@ -139,7 +139,7 @@ public class ApiController {
     }
 
     private String composeEmail(DataOwner owner) {
-       return  "<p>Hello"+ owner.getUsername()+ "<br /> " +
+       return  "<p>Hello   "+ owner.getUsername()+ ",<br /> <br /> " +
                 "You recently opened an account with LoginApp, <br /> please click <a href=\"https://loginmobileapp.herokuapp.com/api/users/confirm/"+owner.getId()
                +"\">here</a> to confirm your account. <p>";
     }
