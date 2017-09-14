@@ -129,7 +129,7 @@ public class ApiController {
     }
 
     @GetMapping(value = "/users/confirm/{id}")
-    private String confirmUser(@PathVariable("is") long id){
+    private String confirmUser(@PathVariable("id") long id){
         DataOwner owner = dataOwnerService.getUserById(id);
         owner.setConfirmation_status(1);
         dataOwnerService.createUser(owner);
