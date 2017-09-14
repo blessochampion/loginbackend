@@ -1,17 +1,16 @@
 package com.example.demo;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.example.demo.model.Content;
 import com.example.demo.model.DataOwner;
 import com.example.demo.model.LoginAppResponse;
 import com.example.demo.service.ContentService;
 import com.example.demo.service.DataOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -79,7 +78,7 @@ public class ApiController {
 
     @PostMapping(value = "/users/addcontent")
     @ResponseBody
-    public LoginAppResponse<DataOwner> authenticate(@RequestBody Content content) {
+    public LoginAppResponse<DataOwner> addcontent(@RequestBody Content content) {
         LoginAppResponse<DataOwner> response = new LoginAppResponse<>();
         response.setCode(LoginAppResponse.FAILURE);
         DataOwner user = dataOwnerService.getUserById(content.getUserId());
@@ -87,7 +86,8 @@ public class ApiController {
             response.setDescription("Invalid UserId");
             return response;
         }
-        user = dataOwnerService.setUserPoint(content.getUserId());
+        user = dataOwnerService.getUserById(content.getUserId());
+        user = dataOwnerService.setUserPoint(content.getUserId(), user.getPoint()-1);
         contentService.createContent(content);
         response.setCode(LoginAppResponse.SUCCESS);
         response.setDescription("Success");
@@ -95,7 +95,7 @@ public class ApiController {
         return response;
     }
 
-    @GetMapping(value = "users/{id}/contents")
+    @GetMapping(value = "/users/{id}/contents")
     @ResponseBody
     public LoginAppResponse<List<Content>> getAllContentById(@PathVariable("id") Long id) {
         List<Content> contents = contentService.findContentsByUserId(id);
@@ -105,5 +105,49 @@ public class ApiController {
          return response;
     }
 
+    @PostMapping(value = "/users/sendmail")
+    @ResponseBody
+    public String sendMail(@RequestBody DataOwner owner){
+
+        String composedMail = composeEmail(owner);
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("Spring-Mail.xml");
+
+        MailSender2 mm = (MailSender2) context.getBean("mailMail");
+        mm.sendMail("loginappng@gmail.com",
+                owner.getEmail(),
+                "Testing123",composedMail);
+
+        return "okay";
+    }
+
+    @GetMapping(value = "/users/confirm/{id}")
+    private String confirmUser(@PathVariable("is") long id){
+        DataOwner owner = dataOwnerService.getUserById(id);
+        return  "Hi " + owner.getUsername() + "Your account has been confirmed";
+    }
+
+    private String composeEmail(DataOwner owner) {
+       return  "<p>Hello"+ owner.getUsername()+ "<br /> " +
+                "You recently opened an account with LoginApp, <br /> please click <a href=\"https://loginmobileapp.herokuapp.com/api/users/confirm/"+owner.getId()
+               +"\">here</a> to confirm your account. <p>";
+    }
+
+    @PostMapping(value = "/users/updatepoint/{id}/{point}")
+    @ResponseBody
+    public LoginAppResponse<DataOwner> addcontent(@PathVariable("id") long id, @PathVariable("point") int point) {
+        LoginAppResponse<DataOwner> response = new LoginAppResponse<>();
+        response.setCode(LoginAppResponse.FAILURE);
+        DataOwner user = dataOwnerService.getUserById(id);
+        if (user == null) {
+            response.setDescription("Invalid UserId");
+            return response;
+        }
+        user = dataOwnerService.setUserPoint(id, point);
+        response.setCode(LoginAppResponse.SUCCESS);
+        response.setDescription("Success");
+        response.setData(user);
+        return response;
+    }
 
 }

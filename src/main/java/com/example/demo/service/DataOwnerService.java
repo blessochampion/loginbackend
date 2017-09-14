@@ -14,7 +14,7 @@ public interface DataOwnerService {
 
     DataOwner createUser(DataOwner user);
 
-    DataOwner setUserPoint(long userId);
+    DataOwner setUserPoint(long userId, int point);
     DataOwner getUserById(long id);
 
 
