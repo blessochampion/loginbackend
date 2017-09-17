@@ -4,6 +4,7 @@ import com.example.demo.config.ServerConfig;
 import com.example.demo.model.Content;
 import com.example.demo.model.DataOwner;
 import com.example.demo.model.LoginAppResponse;
+import com.example.demo.model.Recharge;
 import com.example.demo.service.ContentService;
 import com.example.demo.service.DataOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,34 @@ public class ApiController {
          return response;
     }
 
+    @PostMapping(value = "/users/recharge")
+    @ResponseBody
+    public LoginAppResponse<String> recharge(@RequestBody Recharge recharge) {
+        LoginAppResponse<String> response = new LoginAppResponse<>();
+        response.setCode(LoginAppResponse.FAILURE);
+        List<DataOwner> users = dataOwnerService.getUserByEmail(recharge.getEmail());
+
+        if (users.size() == 0) {
+            response.setDescription("Email does not exist");
+            return response;
+        }
+
+        if (users.get(0).getConfirmation_status()==0) {
+            response.setDescription("Please confirm your email address. Kindly check your email for the confirmation link");
+            return response;
+        }
+
+        DataOwner owner = users.get(0);
+        int currentPoint  = owner.getPoint() + (int)(recharge.getAmount()/10);
+        owner.setPoint(currentPoint);
+        dataOwnerService.createUser(owner);
+        response.setCode(LoginAppResponse.SUCCESS);
+        response.setDescription("Success");
+        response.setData("Point added successfully, your new point balance is " + currentPoint);
+        return response;
+    }
+
+
 
     public void sendMail( DataOwner owner){
 
@@ -160,5 +189,6 @@ public class ApiController {
         response.setData(user);
         return response;
     }
+
 
 }
