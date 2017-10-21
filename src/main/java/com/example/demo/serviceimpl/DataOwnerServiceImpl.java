@@ -7,16 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class DataOwnerServiceImpl implements DataOwnerService{
 
-    private DataOwnerRepository dataOwnerRepository;
-
     @Autowired
-    public void setDataOwnerRepository(DataOwnerRepository dataOwnerRepository) {
-        this.dataOwnerRepository = dataOwnerRepository;
-    }
+    private DataOwnerRepository dataOwnerRepository;
 
     @Override
     public List<DataOwner> getAllUsers(){

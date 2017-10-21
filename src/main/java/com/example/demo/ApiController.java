@@ -16,8 +16,12 @@ import java.util.List;
 public class ApiController {
 
     private DataOwnerService dataOwnerService;
+    
     private ContentService contentService;
 
+    @Autowired
+    private MailSender2 mailSender;
+    
     @Autowired
     public void setDataOwnerService(DataOwnerService dataOwnerService) {
         this.dataOwnerService = dataOwnerService;
@@ -56,7 +60,7 @@ public class ApiController {
         response.setCode(LoginAppResponse.SUCCESS);
         response.setDescription("Success");
         DataOwner user = dataOwnerService.createUser(owner);
-        sendMail(user);
+        mailSender.sendMail(user);
         response.setData(user);
         return response;
 
@@ -143,17 +147,7 @@ public class ApiController {
 
 
 
-    public void sendMail( DataOwner owner){
-
-        String composedMail = composeEmail(owner);
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("Spring-Mail.xml");
-
-        MailSender2 mm = (MailSender2) context.getBean("mailMail");
-        mm.sendMail(ServerConfig.EMAIL,
-                owner.getEmail(), ServerConfig.EMAIL_TITLE,composedMail);
-
-    }
+    
 
     @GetMapping(value = "/users/confirm/{id}")
     @ResponseBody
@@ -164,11 +158,7 @@ public class ApiController {
         return  "Your account has been confirmed";
     }
 
-    private String composeEmail(DataOwner owner) {
-       return  "<p>Hello   "+ owner.getUsername()+ ",<br /> <br /> " +
-                "You recently opened an account with LoginApp, <br /> please click <a href=\"https://loginmobileapp.herokuapp.com/api/users/confirm/"+owner.getId()
-               +"\">here</a> to confirm your account. <p>";
-    }
+ 
 
     @PostMapping(value = "/users/updatepoint/{id}/{point}")
     @ResponseBody

@@ -4,6 +4,7 @@ public class LoginAppResponse<T>
 {
     int code;
     String description;
+    
     T data;
     public static final int FAILURE = 0;
     public static final int SUCCESS = 1;
