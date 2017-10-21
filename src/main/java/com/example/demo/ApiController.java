@@ -1,10 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.config.ServerConfig;
-import com.example.demo.model.Content;
-import com.example.demo.model.DataOwner;
-import com.example.demo.model.LoginAppResponse;
-import com.example.demo.model.Recharge;
+import com.example.demo.model.*;
 import com.example.demo.service.ContentService;
 import com.example.demo.service.DataOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,5 +187,30 @@ public class ApiController {
         return response;
     }
 
+    @PostMapping(value = "/users/forgotPassword")
+    @ResponseBody
+    public LoginAppResponse<String> forgotPassword(@RequestBody PasswordResetRequest resetRequest)
+    {
+        LoginAppResponse<String> response = new LoginAppResponse<>();
+        response.setCode(LoginAppResponse.FAILURE);
+       List<DataOwner> user = dataOwnerService.getUserByEmail(resetRequest.getEmail());
+       if(user.size() > 0){
+           response.setCode(LoginAppResponse.SUCCESS);
+           sendPasswordLinkToUserEmail(user.get(0));
+           response.setDescription("Success");
+           response.setData("Please check your email for the link to reset your password");
+       }else {
+          response.setDescription("Failure");
+          response.setData("User does not exist");
+       }
+
+       return response;
+    }
+
+    private void sendPasswordLinkToUserEmail(DataOwner owner)
+    {
+
+
+    }
 
 }
