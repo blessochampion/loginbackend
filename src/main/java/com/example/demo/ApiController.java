@@ -1,12 +1,10 @@
 package com.example.demo;
 
-import com.example.demo.config.ServerConfig;
+
 import com.example.demo.model.*;
 import com.example.demo.service.ContentService;
 import com.example.demo.service.DataOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
